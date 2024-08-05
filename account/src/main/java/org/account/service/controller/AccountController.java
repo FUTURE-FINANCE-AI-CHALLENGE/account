@@ -15,19 +15,9 @@ import java.util.Optional;
 public class AccountController {
     private final AccountService accountService;
 
-
     @PostMapping
     public void createAccount(@RequestBody Account account) {
-        accountService.createAccount(
-                account.getTitle(),
-                account.getTotal(),
-                account.getIncome(),
-                account.getExpense(),
-                account.getCategory(),
-                account.getDescription(),
-                new Date(account.getDate().getTime()),
-                account.getUserId()
-        );
+        accountService.createAccount(account);
     }
 
     @PutMapping
@@ -35,12 +25,10 @@ public class AccountController {
         accountService.updateAccount(account);
     }
 
-
     @DeleteMapping("/{userId}")
     public void deleteAccount(@PathVariable String userId) {
         accountService.deleteAccount(userId);
     }
-
 
     @GetMapping("/{userId}")
     public Optional<Account> getAccountById(@PathVariable String userId) {
@@ -51,6 +39,4 @@ public class AccountController {
     public List<Account> getAllAccounts() {
         return accountService.getAllAccounts();
     }
-
-
 }

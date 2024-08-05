@@ -6,11 +6,7 @@
       <h2>Create Account</h2>
       <form @submit.prevent="createAccount">
         <input v-model="newAccount.title" placeholder="Title" required />
-        <input v-model="newAccount.total" type="number" placeholder="Total" required />
-        <input v-model="newAccount.income" type="number" placeholder="Income" required />
-        <input v-model="newAccount.expense" type="number" placeholder="Expense" required />
-        <input v-model="newAccount.category" placeholder="Category" />
-        <textarea v-model="newAccount.description" placeholder="Description"></textarea>
+        <input v-model="newAccount.description" placeholder="Description" />
         <input v-model="newAccount.date" type="date" required />
         <input v-model="newAccount.userId" placeholder="User ID" required />
         <button type="submit">Create</button>
@@ -25,10 +21,6 @@
         <li v-for="account in accounts" :key="account.id">
           <div>
             <p><strong>Title:</strong> {{ account.title }}</p>
-            <p><strong>Total:</strong> {{ account.total }}</p>
-            <p><strong>Income:</strong> {{ account.income }}</p>
-            <p><strong>Expense:</strong> {{ account.expense }}</p>
-            <p><strong>Category:</strong> {{ account.category }}</p>
             <p><strong>Description:</strong> {{ account.description }}</p>
             <p><strong>Date:</strong> {{ account.date }}</p>
             <p><strong>User ID:</strong> {{ account.userId }}</p>
@@ -43,11 +35,7 @@
       <h2>Edit Account</h2>
       <form @submit.prevent="updateAccount">
         <input v-model="selectedAccount.title" placeholder="Title" required />
-        <input v-model="selectedAccount.total" type="number" placeholder="Total" required />
-        <input v-model="selectedAccount.income" type="number" placeholder="Income" required />
-        <input v-model="selectedAccount.expense" type="number" placeholder="Expense" required />
-        <input v-model="selectedAccount.category" placeholder="Category" />
-        <textarea v-model="selectedAccount.description" placeholder="Description"></textarea>
+        <input v-model="selectedAccount.description" placeholder="Description" />
         <input v-model="selectedAccount.date" type="date" required />
         <input v-model="selectedAccount.userId" placeholder="User ID" required />
         <button type="submit">Update</button>
@@ -65,10 +53,6 @@ export default {
     return {
       newAccount: {
         title: '',
-        total: null,
-        income: null,
-        expense: null,
-        category: '',
         description: '',
         date: '',
         userId: ''
@@ -84,10 +68,6 @@ export default {
         await axios.post('http://localhost:8080/account', this.newAccount);
         this.newAccount = {
           title: '',
-          total: null,
-          income: null,
-          expense: null,
-          category: '',
           description: '',
           date: '',
           userId: ''
@@ -100,7 +80,7 @@ export default {
     async fetchAccounts() {
       try {
         const response = await axios.get(`http://localhost:8080/account?userId=${this.searchUserId}`);
-        this.accounts = response.data.content;
+        this.accounts = response.data; // assuming the response data is a list of accounts
       } catch (error) {
         console.error("Failed to fetch accounts:", error);
       }

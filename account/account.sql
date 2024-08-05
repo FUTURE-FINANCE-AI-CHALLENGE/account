@@ -15,20 +15,28 @@ drop table account;
 ALTER TABLE users MODIFY birthYear VARCHAR(10);
 CREATE TABLE account
 (
-    id          BIGINT AUTO_INCREMENT PRIMARY KEY, -- 계좌 ID, 자동 증가하는 기본 키
-    userId      VARCHAR(255) NOT NULL,             -- 사용자 ID, 외래 키로 설정
-    title       VARCHAR(255) NOT NULL,             -- 제목
-    total       INT,                               -- 총 금액
-    income      INT,                               -- 수입
-    expense     INT,                               -- 지출
-    category    VARCHAR(255),                      -- 카테고리
-    description TEXT,                              -- 설명
-    date        DATE,                              -- 날짜
-    FOREIGN KEY (userId) REFERENCES users (userId) -- 외래 키 제약조건 설정
+    id          BIGINT AUTO_INCREMENT PRIMARY KEY,
+    userId      VARCHAR(255) NOT NULL,
+    title       VARCHAR(255) NOT NULL,
+
+    description TEXT,
+    date        DATE,
+    FOREIGN KEY (userId) REFERENCES users (userId)
 );
 
-CREATE INDEX idx_userId ON Users(userId);
+
+
+CREATE TABLE expense (
+                         id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                         accountId BIGINT NOT NULL,
+                         amount INT,
+                         FOREIGN KEY (accountId) REFERENCES account (id)
+);
+
+CREATE TABLE income (
+                        id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                        accountId BIGINT NOT NULL,
+                        amount INT,
+                        FOREIGN KEY (accountId) REFERENCES account (id)
+);
 ALTER TABLE account DROP FOREIGN KEY account_ibfk_1;
-
-
-describe table users;
