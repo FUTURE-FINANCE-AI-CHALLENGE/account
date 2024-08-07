@@ -1,3 +1,4 @@
+// router/index.js
 import { createRouter, createWebHistory } from 'vue-router';
 import { store } from '../store';
 import HomePage from '../components/HomePage.vue';
@@ -8,51 +9,23 @@ import AccountDetail from '../components/AccountDetail.vue';
 import CreateAccount from '../components/CreateAccount.vue';
 
 const routes = [
-    {
-        path: '/',
-        name: 'Home',
-        component: HomePage,
-    },
-    {
-        path: '/login',
-        name: 'Login',
-        component: LoginForm,
-    },
-    {
-        path: '/register',
-        name: 'Register',
-        component: RegisterForm,
-    },
-    {
-        path: '/account',
-        name: 'AccountList',
-        component: AccountList,
-        meta: { requiresAuth: true }
-    },
-    {
-        path: '/account/new',
-        name: 'CreateAccount',
-        component: CreateAccount,
-        meta: { requiresAuth: true }
-    },
-    {
-        path: '/account/:userId',
-        name: 'AccountDetail',
-        component: AccountDetail,
-        props: true,
-        meta: { requiresAuth: true }
-    }
+    { path: '/', name: 'Home', component: HomePage },
+    { path: '/login', name: 'Login', component: LoginForm },
+    { path: '/register', name: 'Register', component: RegisterForm },
+    { path: '/account', name: 'AccountList', component: AccountList, meta: { requiresAuth: true } },
+    { path: '/account/new', name: 'CreateAccount', component: CreateAccount, meta: { requiresAuth: true } },
+    { path: '/account/:userId', name: 'AccountDetail', component: AccountDetail, props: true, meta: { requiresAuth: true } }
 ];
 
 const router = createRouter({
     history: createWebHistory(process.env.BASE_URL),
-    routes,
+    routes
 });
 
 router.beforeEach((to, from, next) => {
     const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
 
-    if (requiresAuth && !store.getters.isAuthenticated) {
+    if (requiresAuth && !store.state.isAuthenticated) {
         next('/login');
     } else {
         next();

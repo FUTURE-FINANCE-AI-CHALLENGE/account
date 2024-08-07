@@ -59,6 +59,16 @@ public class UserRepository {
         }
     }
 
+    public Optional<User> getByNickname(String nickname) {
+        try {
+            return Optional.ofNullable(
+                    jdbcTemplate.queryForObject("SELECT * FROM users WHERE name = ?", new Object[]{nickname}, new UserRowMapper())
+            );
+        } catch (Exception e) {
+            return Optional.empty();
+        }
+    }
+
     private static class UserRowMapper implements RowMapper<User> {
         @Override
         public User mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -73,15 +83,6 @@ public class UserRepository {
                     .email(rs.getString("email"))
                     .birthYear(rs.getString("birthYear"))
                     .build();
-        }
-    }
-
-    public Optional<User> findByUserIdAndPassword(String userId, String password) {
-        String sql = "SELECT * FROM users WHERE userId = ? AND password = ?";
-        try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, new Object[]{userId, password}, new UserRowMapper()));
-        } catch (Exception e) {
-            return Optional.empty();
         }
     }
 }

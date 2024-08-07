@@ -1,3 +1,4 @@
+<!-- src/components/LoginForm.vue -->
 <template>
   <div>
     <h1>Login</h1>
@@ -25,11 +26,8 @@ export default {
 
     const handleLogin = async () => {
       try {
-        // 로그인 요청을 /users/login으로 수정
-        const response = await store.dispatch('login', { userId: userId.value, password: password.value });
-        if (response) {
-          router.push('/account');
-        }
+        await store.dispatch('login', { userId: userId.value, password: password.value });
+        router.push('/account');
       } catch (err) {
         error.value = 'Login failed: ' + err.message;
       }
