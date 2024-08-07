@@ -3,7 +3,7 @@ package org.account.service.domain;
 import lombok.Builder;
 import lombok.Data;
 
-import java.sql.Date;
+import java.util.Date;  // 수정: java.sql.Date -> java.util.Date
 
 @Data
 @Builder
@@ -12,8 +12,8 @@ public class Account {
     private String userId;
     private String title;
     private String description;
-    private Date date;
-    private Integer amount;  // 금액 (수입 또는 지출)
-    private String type;     // 트랜잭션 유형 (INCOME 또는 EXPENSE)
-    private String category; // 카테고리 (예: "Salary", "Groceries")
+    private Date date;  // 수정: java.sql.Date -> java.util.Date
+    private Integer amount;
+    private String type;
+    private String category;
 }

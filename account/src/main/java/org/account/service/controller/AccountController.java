@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,15 +29,15 @@ public class AccountController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping("/{userId}")
-    public ResponseEntity<Void> deleteAccount(@PathVariable String userId) {
-        accountService.deleteAccount(userId);
+    @DeleteMapping("/{id}")  // 수정: userId -> id
+    public ResponseEntity<Void> deleteAccount(@PathVariable Long id) {  // 수정: String -> Long
+        accountService.deleteAccount(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<Account> getAccountById(@PathVariable String userId) {
-        return accountService.getAccount(userId)
+    @GetMapping("/{id}")  // 수정: userId -> id
+    public ResponseEntity<Account> getAccountById(@PathVariable Long id) {  // 수정: String -> Long
+        return accountService.getAccount(id)
                 .map(account -> new ResponseEntity<>(account, HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }

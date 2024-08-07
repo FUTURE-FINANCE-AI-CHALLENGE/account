@@ -4,7 +4,7 @@
     <div v-if="account">
       <h2>{{ account.title }}</h2>
       <p>{{ account.description }}</p>
-      <p>Date: {{ account.date }}</p>
+      <p>Date: {{ new Date(account.date).toLocaleDateString() }}</p>
       <p>Amount: {{ account.amount }}</p>
       <p>Type: {{ account.type }}</p>
       <p>Category: {{ account.category }}</p>
@@ -17,30 +17,42 @@
 
 <script>
 import axios from 'axios';
+import { ref, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
+import { useStore } from 'vuex';
 
 export default {
-  props: {
-    userId: String // URL 파라미터로 전달된 userId
-  },
-  data() {
-    return {
-      account: null
-    };
-  },
-  async created() {
-    if (this.userId) {
-      await this.fetchAccount(this.userId);
-    }
-  },
-  methods: {
-    async fetchAccount(userId) {
+  setup() {
+    const route = useRoute();
+    const store = useStore();
+    const account = ref(null);
+
+    const fetchAccount = async (userId) => {
       try {
-        const response = await axios.get(`http://localhost:8080/account/${userId}`);
-        this.account = response.data;
+        // Include authorization header if necessary
+        const authHeader = store.getters.token ? `Bearer ${store.getters.token}` : '';
+
+        const response = await axios.get(`http://localhost:8080/account/${userId}`, {
+          headers: {
+            'Authorization': authHeader
+          }
+        });
+        account.value = response.data;
       } catch (error) {
         console.error('Failed to fetch account:', error);
       }
-    }
+    };
+
+    onMounted(() => {
+      const userId = route.params.userId; // Get userId from route params
+      if (userId) {
+        fetchAccount(userId);
+      }
+    });
+
+    return {
+      account
+    };
   }
 };
 </script>
