@@ -29,9 +29,10 @@ public class AccountRepository {
         String sql = "SELECT * FROM account WHERE userId = ?";
         return jdbcTemplate.query(sql, new Object[]{userId}, new AccountRowMapper());
     }
-    public void createAccount(String title, Integer total, Integer income, Integer expense, String category, String description, Date date, String userId) {
-        String sql = "INSERT INTO account (title, total, income, expense, category, description, date, userId) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        jdbcTemplate.update(sql, title, total, income, expense, category, description, date, userId);
+    public void createAccount(Account account) {
+        String sql = "INSERT INTO account (userId, title, description, date, amount, type, category) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        jdbcTemplate.update(sql, account.getUserId(), account.getTitle(), account.getDescription(),
+                new java.sql.Date(account.getDate().getTime()), account.getAmount(), account.getType(), account.getCategory());
     }
 
     public void updateAccount(Account account) {
