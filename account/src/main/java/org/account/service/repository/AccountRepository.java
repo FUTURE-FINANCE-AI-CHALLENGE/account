@@ -10,7 +10,6 @@ import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,16 +26,16 @@ public class AccountRepository {
         return jdbcTemplate.query(sql, new AccountRowMapper());
     }
 
-    public Optional<Account> getAccount(String userId) {
-        String sql = "SELECT * FROM account WHERE userId = ?";
+    public Optional<Account> getAccount(Long id) {  // 수정: String -> Long
+        String sql = "SELECT * FROM account WHERE id = ?";  // 수정: userId -> id
 
         try {
-            Account account = jdbcTemplate.queryForObject(sql, new Object[]{userId}, new AccountRowMapper());
+            Account account = jdbcTemplate.queryForObject(sql, new Object[]{id}, new AccountRowMapper());  // 수정: userId -> id
             return Optional.of(account);
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         } catch (IncorrectResultSizeDataAccessException e) {
-            throw new IllegalStateException("Multiple accounts found for userId: " + userId, e);
+            throw new IllegalStateException("Multiple accounts found for id: " + id, e);  // 수정: userId -> id
         }
     }
 
@@ -52,26 +51,25 @@ public class AccountRepository {
                 account.getAmount(), account.getType(), account.getCategory(), account.getId());
     }
 
-    public void deleteAccount(String userId) {
-        String sql = "DELETE FROM account WHERE userId = ?";
-        jdbcTemplate.update(sql, userId);
+    public void deleteAccount(Long id) {  // 수정: String -> Long
+        String sql = "DELETE FROM account WHERE id = ?";  // 수정: userId -> id
+        jdbcTemplate.update(sql, id);
     }
 
     private static class AccountRowMapper implements RowMapper<Account> {
         @Override
         public Account mapRow(ResultSet rs, int rowNum) throws SQLException {
-            java.util.Date date = rs.getDate("date");
+            java.util.Date date = rs.getDate("date");  // 수정: java.sql.Date -> java.util.Date
             return Account.builder()
                     .id(rs.getLong("id"))
                     .userId(rs.getString("userId"))
                     .title(rs.getString("title"))
                     .description(rs.getString("description"))
-                    .date((Date) date)
+                    .date(date)  // 수정: java.sql.Date -> java.util.Date
                     .amount(rs.getInt("amount"))
                     .type(rs.getString("type"))
                     .category(rs.getString("category"))
                     .build();
         }
     }
-
 }

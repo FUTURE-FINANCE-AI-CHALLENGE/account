@@ -4,7 +4,6 @@ import org.account.service.domain.Account;
 import org.account.service.repository.AccountRepository;
 import org.springframework.stereotype.Service;
 
-import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,8 +19,8 @@ public class AccountService {
         return accountRepository.getAllAccounts();
     }
 
-    public Optional<Account> getAccount(String userId) {
-        return accountRepository.getAccount(userId);
+    public Optional<Account> getAccount(Long id) {  // 수정: String -> Long
+        return accountRepository.getAccount(id);
     }
 
     public void createAccount(Account account) {
@@ -32,7 +31,7 @@ public class AccountService {
         accountRepository.updateAccount(account);
     }
 
-    public void deleteAccount(String userId) {
-        accountRepository.deleteAccount(userId);
+    public void deleteAccount(Long id) {  // 수정: String -> Long
+        accountRepository.deleteAccount(id);
     }
 }
