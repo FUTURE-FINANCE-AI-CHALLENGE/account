@@ -1,22 +1,19 @@
 package org.account.service.domain;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
 
 import java.sql.Date;
-import java.util.List;
 
+@Data
 @Builder
-@NoArgsConstructor
-@Getter
-@Setter
-@ToString
-@AllArgsConstructor
 public class Account {
     private Long id;
     private String userId;
     private String title;
     private String description;
     private Date date;
-    private List<Expense> expenses;
-    private List<Income> incomes;
+    private Integer amount;  // 금액 (수입 또는 지출)
+    private String type;     // 트랜잭션 유형 (INCOME 또는 EXPENSE)
+    private String category; // 카테고리 (예: "Salary", "Groceries")
 }

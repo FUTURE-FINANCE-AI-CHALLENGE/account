@@ -1,9 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import { useStore } from 'vuex'; // Vuex 스토어 임포트
+import { store } from '../store';
 import HomePage from '../components/HomePage.vue';
 import LoginForm from '../components/LoginForm.vue';
 import RegisterForm from '../components/RegisterForm.vue';
-import AccountManager from '../components/AccountManager.vue';
+import AccountList from '../components/AccountList.vue';
+import AccountDetail from '../components/AccountDetail.vue';
+import CreateAccount from '../components/CreateAccount.vue';
 
 const routes = [
     {
@@ -22,11 +24,24 @@ const routes = [
         component: RegisterForm,
     },
     {
-        path: '/account-manager',
-        name: 'AccountManager',
-        component: AccountManager,
-        meta: { requiresAuth: true } // 인증이 필요한 라우트
+        path: '/account',
+        name: 'AccountList',
+        component: AccountList,
+        meta: { requiresAuth: true }
     },
+    {
+        path: '/account/new',
+        name: 'CreateAccount',
+        component: CreateAccount,
+        meta: { requiresAuth: true }
+    },
+    {
+        path: '/account/:userId',
+        name: 'AccountDetail',
+        component: AccountDetail,
+        props: true,
+        meta: { requiresAuth: true }
+    }
 ];
 
 const router = createRouter({
@@ -34,13 +49,11 @@ const router = createRouter({
     routes,
 });
 
-// 라우터 가드 설정
 router.beforeEach((to, from, next) => {
-    const store = useStore(); // Vuex 스토어 가져오기
     const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
 
     if (requiresAuth && !store.getters.isAuthenticated) {
-        next('/login'); // 인증되지 않은 경우 로그인 페이지로 리디렉션
+        next('/login');
     } else {
         next();
     }

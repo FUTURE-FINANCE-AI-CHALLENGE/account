@@ -1,43 +1,46 @@
 <template>
   <div>
     <h1>Login</h1>
-    <form @submit.prevent="login">
+    <form @submit.prevent="handleLogin">
       <input v-model="userId" placeholder="User ID" required />
       <input v-model="password" type="password" placeholder="Password" required />
       <button type="submit">Login</button>
+      <p v-if="error" style="color: red;">{{ error }}</p>
     </form>
   </div>
 </template>
 
 <script>
-import { useStore } from 'vuex'; // Vuex 스토어 임포트
-import axios from 'axios';
+import { ref } from 'vue';
+import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
 
 export default {
-  data() {
-    return {
-      userId: '',
-      password: ''
-    };
-  },
-  methods: {
-    async login() {
-      try {
-        const response = await axios.post('http://localhost:8080/users/login', {
-          userId: this.userId,
-          password: this.password
-        });
-
-        this.$store.dispatch('login', response.data); // Vuex에 사용자 정보 저장
-        this.$router.push('/account-manager'); // 로그인 후 리디렉션
-      } catch (error) {
-        console.error('Login failed:', error);
-      }
-    }
-  },
   setup() {
-    const store = useStore(); // Vuex 스토어 가져오기
-    return { store };
+    const store = useStore();
+    const router = useRouter();
+    const userId = ref('');
+    const password = ref('');
+    const error = ref(null);
+
+    const handleLogin = async () => {
+      try {
+        // 로그인 요청을 /users/login으로 수정
+        const response = await store.dispatch('login', { userId: userId.value, password: password.value });
+        if (response) {
+          router.push('/account');
+        }
+      } catch (err) {
+        error.value = 'Login failed: ' + err.message;
+      }
+    };
+
+    return {
+      userId,
+      password,
+      error,
+      handleLogin
+    };
   }
 };
 </script>

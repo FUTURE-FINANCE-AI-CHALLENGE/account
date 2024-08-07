@@ -3,7 +3,7 @@
     <h1>Home Page</h1>
     <router-link to="/login">Login</router-link>
     <router-link to="/register">Register</router-link>
-    <router-link to="/account-manager">Account Manager</router-link>
+
   </div>
 </template>
 
