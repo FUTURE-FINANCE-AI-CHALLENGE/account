@@ -2,8 +2,7 @@
   <div>
     <h1>내역 상세 정보</h1>
 
-
-    <form v-if="!isEditing" @submit.prevent="updateAccount">
+    <form v-if="!isEditing">
       <div>
         <label for="title">제목:</label>
         <input v-model="account.title" id="title" type="text" required />
@@ -31,10 +30,8 @@
         <label for="category">카테고리:</label>
         <input v-model="account.category" id="category" type="text" />
       </div>
-      <button type="submit">내역 업데이트</button>
-      <button @click="isEditing = true" type="button">편집</button>
+      <button @click="startEditing" type="button">편집</button>
     </form>
-
 
     <form v-else @submit.prevent="saveChanges">
       <div>
@@ -65,9 +62,8 @@
         <input v-model="editAccount.category" id="category" type="text" />
       </div>
       <button type="submit">변경 사항 저장</button>
-      <button @click="isEditing = false" type="button">취소</button>
+      <button @click="cancelEditing" type="button">취소</button>
     </form>
-
 
     <p v-if="error" style="color: red;">{{ error }}</p>
   </div>
@@ -76,12 +72,13 @@
 <script>
 import axios from 'axios';
 import { ref, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 
 export default {
   setup() {
     const route = useRoute();
+    const router = useRouter();
     const store = useStore();
     const account = ref({
       title: '',
@@ -91,7 +88,7 @@ export default {
       type: 'INCOME',
       category: ''
     });
-    const editAccount = ref({ ...account.value }); // 초기화
+    const editAccount = ref({ ...account.value });
     const isEditing = ref(false);
     const error = ref(null);
 
@@ -99,7 +96,7 @@ export default {
       try {
         const response = await axios.get(`http://localhost:8080/account/${route.params.userId}`);
         account.value = response.data;
-        editAccount.value = { ...response.data }; // 초기화
+        editAccount.value = { ...response.data };
       } catch (err) {
         console.error('내역 정보를 가져오는 데 실패했습니다:', err);
         error.value = '내역 정보를 가져오는 데 실패했습니다: ' + err.message;
@@ -115,13 +112,13 @@ export default {
         const formattedDate = new Date(account.value.date).toISOString().split('T')[0];
         const accountData = { ...account.value, date: formattedDate };
 
-        // PATCH 요청으로 변경
-        const response = await axios.patch(`http://localhost:8080/account/${route.params.userId}`, accountData);
+        const response = await axios.put(`http://localhost:8080/account/${route.params.userId}`, accountData);
 
         if (response.status === 200) {
           alert('내역을 성공적으로 업데이트되었습니다!');
-          account.value = { ...accountData }; // 업데이트된 데이터로 교체
+          account.value = { ...accountData };
           isEditing.value = false;
+          router.push(`/account/${route.params.userId}`); // 성공 후 페이지 이동
         } else {
           throw new Error('내역 업데이트에 실패했습니다.');
         }
@@ -139,6 +136,15 @@ export default {
       }
     };
 
+    const startEditing = () => {
+      isEditing.value = true;
+    };
+
+    const cancelEditing = () => {
+      isEditing.value = false;
+      router.push(`/account/${route.params.userId}`); // 편집 취소 후 페이지 이동
+    };
+
     onMounted(fetchAccount);
 
     return {
@@ -146,7 +152,9 @@ export default {
       editAccount,
       isEditing,
       error,
-      saveChanges
+      saveChanges,
+      startEditing,
+      cancelEditing
     };
   }
 };

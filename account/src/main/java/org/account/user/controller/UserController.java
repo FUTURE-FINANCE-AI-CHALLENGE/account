@@ -26,7 +26,7 @@ public class UserController {
         User existingUser = userService.loginUser(user.getUserId(), user.getPassword());
         if (existingUser != null) {
             HttpSession session = request.getSession(true); // Session이 없으면 생성
-            session.setAttribute("userId", existingUser.getUserId());
+            session.setAttribute("userId", existingUser.getId());
             session.setMaxInactiveInterval(1800); // 세션 유지 시간 30분
             return ResponseEntity.ok(existingUser);
         } else {
