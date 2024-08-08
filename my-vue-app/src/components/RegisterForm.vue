@@ -1,6 +1,6 @@
 <template>
   <div class="register-form">
-    <h2>Register</h2>
+    <h2>회원가입</h2>
     <form @submit.prevent="handleRegister">
       <div class="form-group">
         <label for="userId">아이디:</label>

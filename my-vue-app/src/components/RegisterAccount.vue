@@ -34,7 +34,7 @@
         <label for="userId">User ID:</label>
         <input type="text" id="userId" v-model="userId" required />
       </div>
-      <button type="submit">Register</button>
+      <button type="submit" class="btn btn-primary">Register</button>
       <div v-if="error" class="error">{{ error }}</div>
     </form>
   </div>
@@ -73,7 +73,6 @@ export default {
         console.log('Registration successful:', response.data);
       } catch (error) {
         this.error = 'Account registration failed. Please try again.';
-        // Detailed error logging
         console.error('Registration error:', {
           message: error.message,
           stack: error.stack,
@@ -88,41 +87,58 @@ export default {
 
 <style scoped>
 .register-form {
-  max-width: 400px;
-  margin: auto;
+  max-width: 500px;
+  margin: 50px auto;
   padding: 20px;
   border: 1px solid #ddd;
-  border-radius: 8px;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
+
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
 .form-group {
   margin-bottom: 15px;
 }
+
 .form-group label {
   display: block;
   margin-bottom: 5px;
+  font-weight: bold;
+  color: #555;
 }
+
 .form-group input {
   width: 100%;
-  padding: 8px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
   box-sizing: border-box;
 }
+
 button {
-  padding: 10px 15px;
+  width: 100%;
+  padding: 10px;
   background-color: #007bff;
-  color: white;
+  color: #fff;
   border: none;
   border-radius: 5px;
+  font-size: 16px;
   cursor: pointer;
 }
+
 button:hover {
   background-color: #0056b3;
 }
+
 .error {
   color: red;
+  text-align: center;
   margin-top: 10px;
 }
 </style>
-
-
-
-

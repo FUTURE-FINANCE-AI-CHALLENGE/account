@@ -1,5 +1,5 @@
 const { defineConfig } = require('@vue/cli-service');
-const webpack = require('webpack'); // webpack 모듈 가져오기
+const webpack = require('webpack');
 
 module.exports = defineConfig({
   configureWebpack: {
