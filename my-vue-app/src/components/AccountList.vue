@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <h1>내역</h1>
-    <button @click="handleLogout" class="btn btn-secondary">로그아웃</button> <!-- 로그아웃 버튼 추가 -->
+    <button @click="handleLogout" class="btn btn-secondary">로그아웃</button>
     <ul class="account-list">
       <li v-for="account in accounts" :key="account.id" class="account-item">
         <router-link :to="`/account/${account.id}`" class="account-link">
@@ -18,6 +18,9 @@
     </ul>
     <button @click="createNewAccount" class="btn btn-primary">추가</button>
     <p v-if="error" class="error">{{ error }}</p>
+
+    <!-- 그래프 컴포넌트 추가 -->
+    <AccountChart :accounts="accounts" />
   </div>
 </template>
 
@@ -26,8 +29,12 @@ import axios from 'axios';
 import { ref, onMounted } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
+import AccountChart from '@/components/AccountChart.vue'; // 그래프 컴포넌트 가져오기
 
 export default {
+  components: {
+    AccountChart
+  },
   setup() {
     const store = useStore();
     const router = useRouter();
@@ -37,12 +44,13 @@ export default {
     const fetchAccounts = async () => {
       try {
         if (!store.getters.isAuthenticated) {
-          throw new Error('계정 목록을 보려면 로그인해야 합니다.');
+          throw new Error('내역 목록을 보려면 로그인해야 합니다.');
         }
 
         const authHeader = store.getters.token ? `Bearer ${store.getters.token}` : '';
 
         const response = await axios.get('http://localhost:8080/account', {
+          withCredentials:true,
           headers: {
             'Authorization': authHeader
           }
@@ -53,7 +61,7 @@ export default {
           throw new Error('예상치 못한 응답 형식입니다.');
         }
       } catch (err) {
-        error.value = '계정 목록을 가져오지 못했습니다: ' + err.message;
+        error.value = '소비및지출 목록을 가져오지 못했습니다: ' + err.message;
         console.error(err);
       }
     };
@@ -69,7 +77,7 @@ export default {
         });
         await fetchAccounts();
       } catch (err) {
-        error.value = '계정을 삭제하지 못했습니다: ' + err.message;
+        error.value = '내역을 삭제하지 못했습니다: ' + err.message;
         console.error(err);
       }
     };

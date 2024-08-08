@@ -28,7 +28,6 @@ export const store = createStore({
         async login({ commit }, { userId, password }) {
             try {
                 const response = await axios.post('http://localhost:8080/users/login', { userId, password }, { withCredentials: true });
-
                 if (response.status === 200) {
                     commit('setAuthenticated', true);
                     commit('setUser', response.data);

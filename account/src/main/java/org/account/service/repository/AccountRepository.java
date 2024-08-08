@@ -29,31 +29,30 @@ public class AccountRepository {
     public Optional<Account> getAccount(Long id) {
         String sql = "SELECT * FROM account WHERE id = ?";
         try {
-            Account account = jdbcTemplate.queryForObject(sql, new Object[]{id}, new AccountRowMapper());
-            return Optional.of(account);
+            Account account = jdbcTemplate.queryForObject(sql, new AccountRowMapper(), id);
+            return Optional.ofNullable(account);
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         } catch (IncorrectResultSizeDataAccessException e) {
-            throw new IllegalStateException("Multiple accounts found for id: " + id, e);
+            return Optional.empty();
         }
     }
 
     public void createAccount(Account account) {
-        String sql = "INSERT INTO account (userId, title, description, date, amount, type, category) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        jdbcTemplate.update(sql, account.getUserId(), account.getTitle(), account.getDescription(),
-                new java.sql.Date(account.getDate().getTime()), account.getAmount(), account.getType(), account.getCategory());
+        String sql = "INSERT INTO account (title, description, date, amount, type, category) VALUES (?, ?, ?, ?, ?, ?)";
+        jdbcTemplate.update(sql, account.getTitle(), account.getDescription(), account.getDate(), account.getAmount(), account.getType(), account.getCategory());
     }
 
     public void updateAccount(Long id, Account account) {
         String sql = "UPDATE account SET title = ?, description = ?, date = ?, amount = ?, type = ?, category = ? WHERE id = ?";
-        jdbcTemplate.update(sql, account.getTitle(), account.getDescription(), new java.sql.Date(account.getDate().getTime()),
-                account.getAmount(), account.getType(), account.getCategory(), id);
+        jdbcTemplate.update(sql, account.getTitle(), account.getDescription(), account.getDate(), account.getAmount(), account.getType(), account.getCategory(), id);
     }
 
     public void deleteAccount(Long id) {
         String sql = "DELETE FROM account WHERE id = ?";
         jdbcTemplate.update(sql, id);
     }
+
 
     private static class AccountRowMapper implements RowMapper<Account> {
         @Override
