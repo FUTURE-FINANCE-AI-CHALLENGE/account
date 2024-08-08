@@ -19,7 +19,7 @@ public class AccountService {
         return accountRepository.getAllAccounts();
     }
 
-    public Optional<Account> getAccount(Long id) {  // 수정: String -> Long
+    public Optional<Account> getAccount(Long id) {
         return accountRepository.getAccount(id);
     }
 
@@ -27,11 +27,11 @@ public class AccountService {
         accountRepository.createAccount(account);
     }
 
-    public void updateAccount(Account account) {
-        accountRepository.updateAccount(account);
+    public void updateAccount(Long id, Account account) {
+        accountRepository.updateAccount(id, account);
     }
 
-    public void deleteAccount(Long id) {  // 수정: String -> Long
+    public void deleteAccount(Long id) {
         accountRepository.deleteAccount(id);
     }
 }

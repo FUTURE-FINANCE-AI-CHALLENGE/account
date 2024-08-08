@@ -26,16 +26,15 @@ public class AccountRepository {
         return jdbcTemplate.query(sql, new AccountRowMapper());
     }
 
-    public Optional<Account> getAccount(Long id) {  // 수정: String -> Long
-        String sql = "SELECT * FROM account WHERE id = ?";  // 수정: userId -> id
-
+    public Optional<Account> getAccount(Long id) {
+        String sql = "SELECT * FROM account WHERE id = ?";
         try {
-            Account account = jdbcTemplate.queryForObject(sql, new Object[]{id}, new AccountRowMapper());  // 수정: userId -> id
+            Account account = jdbcTemplate.queryForObject(sql, new Object[]{id}, new AccountRowMapper());
             return Optional.of(account);
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         } catch (IncorrectResultSizeDataAccessException e) {
-            throw new IllegalStateException("Multiple accounts found for id: " + id, e);  // 수정: userId -> id
+            throw new IllegalStateException("Multiple accounts found for id: " + id, e);
         }
     }
 
@@ -45,27 +44,27 @@ public class AccountRepository {
                 new java.sql.Date(account.getDate().getTime()), account.getAmount(), account.getType(), account.getCategory());
     }
 
-    public void updateAccount(Account account) {
+    public void updateAccount(Long id, Account account) {
         String sql = "UPDATE account SET title = ?, description = ?, date = ?, amount = ?, type = ?, category = ? WHERE id = ?";
         jdbcTemplate.update(sql, account.getTitle(), account.getDescription(), new java.sql.Date(account.getDate().getTime()),
-                account.getAmount(), account.getType(), account.getCategory(), account.getId());
+                account.getAmount(), account.getType(), account.getCategory(), id);
     }
 
-    public void deleteAccount(Long id) {  // 수정: String -> Long
-        String sql = "DELETE FROM account WHERE id = ?";  // 수정: userId -> id
+    public void deleteAccount(Long id) {
+        String sql = "DELETE FROM account WHERE id = ?";
         jdbcTemplate.update(sql, id);
     }
 
     private static class AccountRowMapper implements RowMapper<Account> {
         @Override
         public Account mapRow(ResultSet rs, int rowNum) throws SQLException {
-            java.util.Date date = rs.getDate("date");  // 수정: java.sql.Date -> java.util.Date
+            java.util.Date date = rs.getDate("date");
             return Account.builder()
                     .id(rs.getLong("id"))
                     .userId(rs.getString("userId"))
                     .title(rs.getString("title"))
                     .description(rs.getString("description"))
-                    .date(date)  // 수정: java.sql.Date -> java.util.Date
+                    .date(date)
                     .amount(rs.getInt("amount"))
                     .type(rs.getString("type"))
                     .category(rs.getString("category"))

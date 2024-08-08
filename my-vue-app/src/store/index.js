@@ -27,7 +27,7 @@ export const store = createStore({
     actions: {
         async login({ commit }, { userId, password }) {
             try {
-                const response = await axios.post('http://localhost:8080/users/login', { userId, password });
+                const response = await axios.post('http://localhost:8080/users/login', { userId, password }, { withCredentials: true });
 
                 if (response.status === 200) {
                     commit('setAuthenticated', true);
@@ -44,9 +44,14 @@ export const store = createStore({
                 throw error;
             }
         },
-        logout({ commit }) {
-            commit('setAuthenticated', false);
-            commit('setUser', null);
+        async logout({ commit }) {
+            try {
+                await axios.post('http://localhost:8080/users/logout', {}, { withCredentials: true });
+                commit('setAuthenticated', false);
+                commit('setUser', null);
+            } catch (error) {
+                console.error('Logout error:', error);
+            }
         }
     }
 });
