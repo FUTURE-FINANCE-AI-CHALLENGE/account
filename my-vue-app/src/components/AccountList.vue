@@ -1,9 +1,11 @@
 <template>
   <div class="container">
     <h1>내역</h1>
-    <button @click="handleLogout" class="btn btn-secondary">로그아웃</button>
+    <AccountChart :accounts="accounts" />
+    <button @click="createNewAccount" class="btn btn-primary">추가</button>
     <ul class="account-list">
       <li v-for="account in accounts" :key="account.id" class="account-item">
+        <span class="account-date">{{ new Date(account.date).toLocaleDateString() }}</span>
         <router-link :to="`/account/${account.id}`" class="account-link">
           <div class="account-info">
             <span class="account-title">{{ account.title }}</span>
@@ -11,16 +13,12 @@
             <span v-if="account.type === 'INCOME'" class="account-type">(수입)</span>
             <span v-if="account.type === 'EXPENSE'" class="account-type">(지출)</span>
           </div>
-          <span class="account-date">{{ new Date(account.date).toLocaleDateString() }}</span>
         </router-link>
         <button @click="deleteAccount(account.id)" class="btn btn-danger">삭제</button>
       </li>
     </ul>
-    <button @click="createNewAccount" class="btn btn-primary">추가</button>
-    <p v-if="error" class="error">{{ error }}</p>
 
-    <!-- 그래프 컴포넌트 추가 -->
-    <AccountChart :accounts="accounts" />
+    <p v-if="error" class="error">{{ error }}</p>
   </div>
 </template>
 
@@ -50,7 +48,7 @@ export default {
         const authHeader = store.getters.token ? `Bearer ${store.getters.token}` : '';
 
         const response = await axios.get('http://localhost:8080/account', {
-          withCredentials:true,
+          withCredentials: true,
           headers: {
             'Authorization': authHeader
           }
@@ -61,7 +59,7 @@ export default {
           throw new Error('예상치 못한 응답 형식입니다.');
         }
       } catch (err) {
-        error.value = '소비및지출 목록을 가져오지 못했습니다: ' + err.message;
+        error.value = '소비 및 지출 목록을 가져오지 못했습니다: ' + err.message;
         console.error(err);
       }
     };
@@ -86,23 +84,12 @@ export default {
       router.push('/account/new');
     };
 
-    const handleLogout = async () => {
-      try {
-        await axios.post('http://localhost:8080/users/logout');
-        store.dispatch('logout');
-        router.push('/login');
-      } catch (err) {
-        console.error('로그아웃 실패', err);
-      }
-    };
-
     onMounted(fetchAccounts);
 
     return {
       accounts,
       deleteAccount,
       createNewAccount,
-      handleLogout,
       error
     };
   }
@@ -132,10 +119,17 @@ h1 {
 
 .account-item {
   display: flex;
-  justify-content: space-between;
   align-items: center;
   padding: 15px 10px;
   border-bottom: 1px solid #ddd;
+}
+
+.account-date {
+  width: 120px;
+  color: #777;
+  font-size: 14px;
+  text-align: left;
+  margin-right: 10px;
 }
 
 .account-link {
@@ -144,12 +138,13 @@ h1 {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
+  flex: 1;
 }
 
 .account-info {
   display: flex;
   flex-direction: column;
+  flex: 1;
 }
 
 .account-title {
@@ -166,11 +161,6 @@ h1 {
   color: #999;
   font-size: 14px;
   margin-top: 5px;
-}
-
-.account-date {
-  color: #777;
-  font-size: 14px;
 }
 
 button {
@@ -192,11 +182,6 @@ button {
 
 .btn-primary {
   background-color: #007bff;
-  color: #fff;
-}
-
-.btn-secondary {
-  background-color: #6c757d;
   color: #fff;
 }
 

@@ -8,10 +8,6 @@
         <input v-model="account.title" id="title" type="text" required />
       </div>
       <div>
-        <label for="description">설명:</label>
-        <input v-model="account.description" id="description" type="text" />
-      </div>
-      <div>
         <label for="date">날짜:</label>
         <input v-model="account.date" id="date" type="date" required />
       </div>
@@ -30,6 +26,10 @@
         <label for="category">카테고리:</label>
         <input v-model="account.category" id="category" type="text" />
       </div>
+      <div>
+        <label for="description">설명:</label>
+        <input v-model="account.description" id="description" type="text" />
+      </div>
       <button @click="startEditing" type="button">편집</button>
     </form>
 
@@ -37,10 +37,6 @@
       <div>
         <label for="title">제목:</label>
         <input v-model="editAccount.title" id="title" type="text" required />
-      </div>
-      <div>
-        <label for="description">설명:</label>
-        <input v-model="editAccount.description" id="description" type="text" />
       </div>
       <div>
         <label for="date">날짜:</label>
@@ -60,6 +56,10 @@
       <div>
         <label for="category">카테고리:</label>
         <input v-model="editAccount.category" id="category" type="text" />
+      </div>
+      <div>
+        <label for="description">설명:</label>
+        <input v-model="editAccount.description" id="description" type="text" />
       </div>
       <button type="submit">변경 사항 저장</button>
       <button @click="cancelEditing" type="button">취소</button>
