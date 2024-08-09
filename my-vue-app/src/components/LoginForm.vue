@@ -1,10 +1,10 @@
 <!-- src/components/LoginForm.vue -->
 <template>
   <div>
-    <h1>Login</h1>
+    <h1>로그인</h1>
     <form @submit.prevent="handleLogin">
-      <input v-model="userId" placeholder="User ID" required />
-      <input v-model="password" type="password" placeholder="Password" required />
+      <input v-model="userId" placeholder="회원 아이디" required />
+      <input v-model="password" type="password" placeholder="비밀번호" required />
       <button type="submit">Login</button>
       <p v-if="error" style="color: red;">{{ error }}</p>
     </form>
