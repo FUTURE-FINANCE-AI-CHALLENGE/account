@@ -29,7 +29,7 @@ export default {
         await store.dispatch('login', { userId: userId.value, password: password.value });
         router.push('/account');
       } catch (err) {
-        error.value = 'Login failed: ' + err.message;
+        error.value = '아이디나 비밀번호가 틀렸습니다 ' ;
       }
     };
 
